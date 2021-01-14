@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/iochen/tudou"
+	"github.com/iochen/tudou/v1"
 )
 
 func TestEncodeAndDecode(t *testing.T) {
@@ -19,4 +19,7 @@ func TestEncodeAndDecode(t *testing.T) {
 		t.Error(err)
 	}
 	fmt.Println(string(b))
+
+	b, err = tudou.Decode("desfgvredhg")
+	fmt.Println(string(b), err)
 }

@@ -12,9 +12,9 @@ import (
 )
 
 var (
-	KEY   = []byte("XDXDtudou@KeyFansClub^_^Encode!!")
-	IV    = []byte("Potato@Key@_@=_=")
-	TuDou = []rune{
+	KEY = []byte("XDXDtudou@KeyFansClub^_^Encode!!")
+	IV  = []byte("Potato@Key@_@=_=")
+	Map = []rune{
 		'滅', '苦', '婆', '娑', '耶', '陀', '跋', '多', '漫', '都', '殿', '悉', '夜', '爍', '帝', '吉',
 		'利', '阿', '無', '南', '那', '怛', '喝', '羯', '勝', '摩', '伽', '謹', '波', '者', '穆', '僧',
 		'室', '藝', '尼', '瑟', '地', '彌', '菩', '提', '蘇', '醯', '盧', '呼', '舍', '佛', '參', '沙',
@@ -37,39 +37,39 @@ func Encode(b []byte) (string, error) {
 	buf := new(strings.Builder)
 	for _, i := range en {
 		if i < 128 {
-			buf.WriteString(string(TuDou[i]))
+			buf.WriteString(string(Map[i]))
 		} else {
 			buf.WriteString(string(random.RandChoose(Keywords)))
-			buf.WriteString(string(TuDou[i-128]))
+			buf.WriteString(string(Map[i-128]))
 		}
 	}
 	return "佛曰：" + buf.String(), nil
 }
 
 func Decode(str string) ([]byte, error) {
-	keywordsMap :=make(map[rune]bool)
-	for _,v :=range Keywords {
-		keywordsMap[v]=true
+	keywordsMap := make(map[rune]bool)
+	for _, v := range Keywords {
+		keywordsMap[v] = true
 	}
 
-	tudouMap :=make(map[rune]byte)
-	for k,v :=range TuDou {
-		tudouMap[v]= byte(k)
+	tudouMap := make(map[rune]byte)
+	for k, v := range Map {
+		tudouMap[v] = byte(k)
 	}
 
 	rStr := []rune(str)
 	if string(rStr[:3]) != "佛曰：" {
-		return nil,errors.New("not valid tudou code")
+		return nil, errors.New("not valid tudou code")
 	}
 	rStr = rStr[3:]
 
 	var en []byte
-	for i:=0;i<len(rStr);i++ {
+	for i := 0; i < len(rStr); i++ {
 		if keywordsMap[rStr[i]] {
 			i++
-			en = append(en,tudouMap[rStr[i]]+128)
+			en = append(en, tudouMap[rStr[i]]+128)
 		} else {
-			en = append(en,tudouMap[rStr[i]])
+			en = append(en, tudouMap[rStr[i]])
 		}
 	}
 	u16, err := aes.Decode(en, KEY, IV)
@@ -79,7 +79,7 @@ func Decode(str string) ([]byte, error) {
 	dec := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
 	b, err := dec.Bytes(u16)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
-	return b,nil
+	return b, nil
 }

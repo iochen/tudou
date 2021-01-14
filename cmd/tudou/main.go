@@ -6,15 +6,15 @@ import (
 	"os"
 	"strings"
 
-	"github.com/iochen/tudou"
+	"github.com/iochen/tudou/v1"
 )
 
 func help() {
-	fmt.Println("Usage: tudou [encode/decode]")
+	fmt.Println("Usage: tudou [encode]/[decode]")
 }
 
 func main() {
-	if len(os.Args) !=2 {
+	if len(os.Args) != 2 {
 		help()
 		return
 	}
